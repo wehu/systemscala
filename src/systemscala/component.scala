@@ -9,12 +9,7 @@ class Component(val name: String, val parent: Component = Component.root) {
   def run : Unit@cps[Unit] = {}
   var threads = scala.collection.mutable.Queue[()=>Unit@cps[Unit]]()
   def wait(e: Event) : Unit@cps[Unit] = {
-    val te = e.tmpEvent
-    val c = Thread.current
-    te.subscribe {
-      Thread.wake(c)
-    }
-    Thread.sleep
+    e._wait()
   }
   def addThread(body: =>Unit@cps[Unit]) {
     threads += (()=>{body})

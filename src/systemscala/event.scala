@@ -1,6 +1,7 @@
 package systemscala
 
 class Event(n: String = "", tmp: Boolean = false) {
+  import scala.util.continuations.cps
   type CB = ()=>Unit
   var cbs = scala.collection.mutable.HashMap[CB, CB]()
   Event.counter += 1
@@ -27,6 +28,16 @@ class Event(n: String = "", tmp: Boolean = false) {
       e._notify
     }
     e
+  }
+  def _wait(once: Boolean = true) :Unit@cps[Unit]= {
+    val c = Thread.current
+    var id: CB = null
+    id = this.subscribe {
+      if(once)
+        this.remove(id)
+      Thread.wake(c)
+    }
+    Thread.sleep
   }
   def or(o: Event, tmp: Boolean = true): Event = {
     val e = new Event("", tmp)

@@ -26,7 +26,7 @@ For example,
 	      Simulate.stop = true
 	    }
 	  }
-	  always(s.event("changed")){
+	  always(s.onChanged){
 	    Logger.info(s.read)
 	  }
 	  Logger.info(s.fullname)

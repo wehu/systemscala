@@ -50,15 +50,16 @@ object Thread {
     runOne
   }
   def runOne {
-    var rs = queue_r.keys
-    if (rs.size > 0){
-      for (r <- rs) {
+    //var rs = queue_r.keys
+    while (queue_r.size > 0){
+      //for (r <- rs) {
+        val (r, _r) = queue_r.head
         Thread.current = root
         remove(r)
         reset {
           r.resume
         }
-      }
+      //}
       runOne
     }
   }

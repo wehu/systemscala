@@ -10,15 +10,19 @@ class Signal(val name: String, val parent: Component = Component.root, var oldVa
   def event(n: String): Event = {
     Event.event(fullname + "." + n)
   }
+  def onRead = event("read")
+  def onWrite = event("write")
+  def onChanged = event("changed")
   def read: Any = {
-    event("read")._notify
+    onRead._notify
     newVal
   }
   def write(v: Any): Unit = {
-    event("write")._notify
-    if(oldVal != v)
-      event("changed")._notify
-    newVal = v
+    onWrite._notify
+    if(newVal != v){
+      newVal = v
+      onChanged._notify
+    }
   }
   def sync {
     oldVal = newVal
