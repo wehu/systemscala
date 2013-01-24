@@ -21,7 +21,7 @@ For example,
 	  val sub = new SubComp("a", this)
 
 	  // Instance a signal
-	  var s = Signal("signal0", this)
+	  var s = Signal[Int]("signal0", 0, this)
 
 	  // A always block
 	  var i = 0
@@ -40,7 +40,7 @@ For example,
 	  }
 
 	  // Instance a pipe
-	  var p = Pipe("pipe0", this)
+	  var p = Pipe[String]("pipe0", this)
 	  initial {
 	    delay(2)
 	    p.write("pipe a")

@@ -38,7 +38,8 @@ object Simulate {
         var sl:()=>Unit = null
         sl = ()=>{
           Thread.runOne
-          Signal.sync
+          Signal.sync[Int]
+          Signal.sync[String]
           SimTime.getRecents match {
             case Some(ss) =>
               ss foreach (_._notify)

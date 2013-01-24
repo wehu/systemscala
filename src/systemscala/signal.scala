@@ -17,10 +17,26 @@
 
 package systemscala
 
-class Signal(val name: String, val parent: Component = Component.root, var oldVal: Any = null) {
+object SignalMgr{
+  abstract class SignalMgr[T] {
+    var insts: scala.collection.mutable.HashMap[String, Signal[T]]
+  }
+  implicit object SignalInt extends SignalMgr[Int]{ 
+    var insts = scala.collection.mutable.HashMap[String, Signal[Int]]()
+  }
+  implicit object SignalString extends SignalMgr[String]{ 
+    var insts = scala.collection.mutable.HashMap[String, Signal[String]]()
+  }
+  //TODO More types
+}
+  
+import SignalMgr._
+
+class Signal[T](val name: String, var oldVal: T, val parent: Component = Component.root)
+  (implicit sm: SignalMgr[T]) {
   val fullname: String = (if (parent == null) ""  else parent.fullname + ".") + name
   var newVal = oldVal
-  Signal.add(this)
+  Signal.add[T](this)(sm)
   Event(fullname + "." + "read")
   Event(fullname + "." + "write")
   Event(fullname + "." + "changed")
@@ -30,11 +46,11 @@ class Signal(val name: String, val parent: Component = Component.root, var oldVa
   def onRead = event("read")
   def onWrite = event("write")
   def onChanged = event("changed")
-  def read: Any = {
+  def read: T = {
     onRead._notify
     newVal
   }
-  def write(v: Any): Unit = {
+  def write(v: T): Unit = {
     onWrite._notify
     if(newVal != v){
       newVal = v
@@ -46,22 +62,23 @@ class Signal(val name: String, val parent: Component = Component.root, var oldVa
   }
 }
 
+
+
 object Signal{
-  var insts = scala.collection.mutable.HashMap[String, Signal]()
-  def apply(name: String, parent: Component = Component.root, v:Any=null) : Signal ={
-    new Signal(name, parent, v)
+  def apply[T](name: String, v:T, parent: Component = Component.root)(implicit sm: SignalMgr[T]) : Signal[T] ={
+    new Signal[T](name, v, parent)(sm)
   }
-  def add[T](s: Signal){
-    insts += (s.fullname -> s)
+  def add[T](s: Signal[T])(implicit sm: SignalMgr[T]){
+    sm.insts += (s.fullname -> s)
   }
-  def signal(n: String): Signal = {
-    insts.get(n) match {
+  def signal[T](n: String)(implicit sm: SignalMgr[T]): Signal[T] = {
+    sm.insts.get(n) match {
       case None => throw new Exception("Cannot find signal " + n)
       case Some(s) => s
     }
   }
-  def sync {
-    for((n, s) <- insts){
+  def sync[T](implicit sm: SignalMgr[T]) {
+    for((n, s) <- sm.insts){
       s.sync
     }
   }

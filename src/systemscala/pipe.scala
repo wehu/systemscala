@@ -17,11 +17,27 @@
 
 package systemscala
 
-class Pipe(val name: String, val parent: Component = Component.root) {
+object PipeMgr{
+  abstract class PipeMgr[T] {
+    var insts: scala.collection.mutable.HashMap[String, Pipe[T]]
+  }
+  implicit object PipeInt extends PipeMgr[Int]{ 
+    var insts = scala.collection.mutable.HashMap[String, Pipe[Int]]()
+  }
+  implicit object PipeString extends PipeMgr[String]{ 
+    var insts = scala.collection.mutable.HashMap[String, Pipe[String]]()
+  }
+  //TODO More types
+}
+  
+import PipeMgr._
+
+class Pipe[T](val name: String, val parent: Component = Component.root)
+  (implicit pm: PipeMgr[T]) {
   import scala.util.continuations.cps
   val fullname: String = (if (parent == null) ""  else parent.fullname + ".") + name
-  var pipe = scala.collection.mutable.Queue[Any]()
-  Pipe.add(this)
+  var pipe = scala.collection.mutable.Queue[T]()
+  Pipe.add[T](this)(pm)
   Event(fullname + "." + "read")
   Event(fullname + "." + "write")
   Event(fullname + "." + "changed")
@@ -30,7 +46,7 @@ class Pipe(val name: String, val parent: Component = Component.root) {
   }
   def onRead = event("read")
   def onWrite = event("write")
-  def read: Any@cps[Unit] = {
+  def read: T@cps[Unit] = {
     onRead._notify
     if(pipe.isEmpty){
       onWrite._wait()
@@ -39,22 +55,22 @@ class Pipe(val name: String, val parent: Component = Component.root) {
       pipe.dequeue
     }
   }
-  def write(v: Any): Unit = {
+  def write(v: T): Unit = {
     onWrite._notify
     pipe += v
   }
 }
 
 object Pipe{
-  var insts = scala.collection.mutable.HashMap[String, Pipe]()
-  def apply(name: String, parent: Component = Component.root) : Pipe ={
-    new Pipe(name, parent)
+  def apply[T](name: String, parent: Component = Component.root)
+    (implicit pm: PipeMgr[T]) : Pipe[T] ={
+    new Pipe[T](name, parent)(pm)
   }
-  def add[T](s: Pipe){
-    insts += (s.fullname -> s)
+  def add[T](s: Pipe[T])(implicit pm: PipeMgr[T]) {
+    pm.insts += (s.fullname -> s)
   }
-  def pipe(n: String): Pipe = {
-    insts.get(n) match {
+  def pipe[T](n: String)(implicit pm: PipeMgr[T]) : Pipe[T] = {
+    pm.insts.get(n) match {
       case None => throw new Exception("Cannot find Pipe " + n)
       case Some(p) => p
     }
