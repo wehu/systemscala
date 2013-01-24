@@ -20,11 +20,6 @@ For example,
 	  // Instance a sub component
 	  val sub = new SubComp("a", this)
 
-	  // A initial block
-	  initial {
-	    info("MyComp start")
-	  }
-	  
 	  // Instance a signal
 	  var s = Signal("signal0", this)
 
@@ -43,7 +38,23 @@ For example,
 	  always(s.onChanged){
 	    info(s.read)
 	  }
-	  info(s.fullname)
+
+	  // Instance a pipe
+	  var p = Pipe("pipe0", this)
+	  initial {
+	    delay(2)
+	    p.write("pipe a")
+	    delay(2)
+	    p.write("pipe b")
+	    delay(4)
+	    p.write("pipe c")
+	  }
+
+	  // Repeat reading the pipe
+	  repeat {
+	    var d = p.read
+	    info(d)
+	  }
 	}
 	
 	// Main

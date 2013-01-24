@@ -28,8 +28,10 @@ object Simulate {
     throw new UserStopException("Simulation finished by user")
   }
   def run(body: => Unit){
-    println("SystemScala Simulator")
-    println("Copyright@wehu 2013")
+    println("###########################")
+    println("## SystemScala Simulator ##")
+    println("##  Copyright@wehu 2013  ##")
+    println("###########################")
     Logger.info("Simulation started")
     try {
       Thread.run{
