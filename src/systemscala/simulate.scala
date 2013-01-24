@@ -23,25 +23,31 @@ abstract class Simulate extends App {
 }
 
 object Simulate {
-  var stop = false
+  class UserStopException(msg: String) extends Exception(msg)
+  def stop {
+    throw new UserStopException("Simulation finished by user")
+  }
   def run(body: => Unit){
-    Thread.run{
-      var sl:()=>Unit = null
-      sl = ()=>{
-        Thread.runOne
-        Signal.sync
-        SimTime.getRecents match {
-          case Some(ss) =>
-            ss foreach (_._notify)
-            if (!stop){
+    try {
+      Thread.run{
+        var sl:()=>Unit = null
+        sl = ()=>{
+          Thread.runOne
+          Signal.sync
+          SimTime.getRecents match {
+            case Some(ss) =>
+              ss foreach (_._notify)
               Thread{sl()}
-            }
-          case None => null
-        }
-      } : Unit
-      body
-      Component.run
-      sl()
+            case None => null
+          }
+        } : Unit
+        body
+        Component.run
+        sl()
+      }
+    } catch {
+      case e: UserStopException => Logger.info(e.getMessage())
+      case e => throw e
     }
   }
 }

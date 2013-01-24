@@ -1,45 +1,47 @@
 import systemscala._
 
-class SubComp (name: String, parent: Component = null)
+import Helper._
+
+class SubComp (name: String, parent: Component = root)
   extends Component(name, parent)
 
-class MyComp(name: String, parent: Component = null)
+class MyComp(name: String, parent: Component = root)
   extends Component(name, parent) {
   val sub = new SubComp("a", this)
   initial {
-    Logger.info("MyComp start")
+    info("MyComp start")
   }
   var i = 0
   var s = Signal("signal0", this)
-  always(SimTime(1)){
+  always(1){
     i += 1
     s.write(i)
     if(i == 10){
-      Logger.info("MyComp stop")
-      Simulate.stop = true
+      info("MyComp stop")
+      stop
     }
   }
   always(s.onChanged){
-    Logger.info(s.read)
+    info(s.read)
   }
   Logger.info(s.fullname)
   var p = Pipe("pipe0", this)
   initial {
-    wait(SimTime(2))
+    delay(2)
     p.write("pipe a")
-    wait(SimTime(2))
+    delay(2)
     p.write("pipe b")
-    wait(SimTime(4))
+    delay(4)
     p.write("pipe c")
   }
   repeat {
     var d = p.read
-    Logger.info(d)
+    info(d)
   }
 }
 
 object Main extends Simulate {
-  def run {
-    new MyComp("comp")
+  def run{
+    new MyComp("comp0")
   }
 }

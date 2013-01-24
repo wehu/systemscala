@@ -44,6 +44,7 @@ object SimTime {
       case Some(q) => q += s
     }
   }
+  def delta(d: Int) = SimTime(d)
   def getRecents: Option[Queue] = {
     if (sts.size > 0) {
       val t = sts.keys.min

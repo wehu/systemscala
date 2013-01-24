@@ -25,14 +25,19 @@ class Component(val name: String, val parent: Component = Component.root) {
   def connect = {}
   def run : Unit@cps[Unit] = {}
   var threads = scala.collection.mutable.Queue[()=>Unit@cps[Unit]]()
-  def wait(e: Event) : Unit@cps[Unit] = {
+  def wait(_e: Any) : Unit@cps[Unit] = {
+    val e = _e match {
+      case _e_ : Event => _e_
+      case _d_ : Int => SimTime(_d_)
+      case _ => throw new Exception("Unsupported argument type for always")
+    }
     e._wait()
   }
   def addThread(body: =>Unit@cps[Unit]) {
     threads += (()=>{body})
   }
   def initial(body: =>Unit@cps[Unit]) = addThread{body}
-  def always(e: => Event)(body: =>Unit@cps[Unit]) {
+  def always(e : => Any)(body: =>Unit@cps[Unit]) {
     val cb: ()=>Unit@cps[Unit] = ()=>{
       while(true){
         wait(e)
@@ -47,7 +52,10 @@ class Component(val name: String, val parent: Component = Component.root) {
     }
   }
   def repeat(body: =>Unit@cps[Unit]){
-    always(SimTime(0)) {body}
+    always(0) {body}
+  }
+  def delay(d: Int) : Unit@cps[Unit] = {
+    wait(SimTime(d))
   }
 }
 

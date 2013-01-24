@@ -62,22 +62,28 @@ object Thread {
     queue_s -= t
     queue_r += (t -> t)
   }
+  class UserStopException(msg: String) extends Exception(msg)
+  def stop(msg: String = "finished") {
+    throw new UserStopException(msg)
+  }
   def run(body: => Unit @cps[Unit]) {
     root = this(body, "root")
     runOne
   }
   def runOne {
-    //var rs = queue_r.keys
-    while (queue_r.size > 0){
-      //for (r <- rs) {
+    try {
+      while (queue_r.size > 0){
         val (r, _r) = queue_r.head
         Thread.current = root
         remove(r)
         reset {
           r.resume
         }
-      //}
-      runOne
+        runOne
+      }      
+    } catch {
+      case _: UserStopException => 
+      case e => throw e
     }
   }
 }
