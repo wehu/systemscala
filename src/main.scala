@@ -32,7 +32,7 @@ class MyComp(name: String, parent: Component = null)
     wait(SimTime(4))
     p.write("pipe c")
   }
-  always(SimTime(1)){
+  repeat {
     var d = p.read
     Logger.info(d)
   }

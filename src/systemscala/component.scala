@@ -29,6 +29,9 @@ class Component(val name: String, val parent: Component = Component.root) {
       Thread {t()}
     }
   }
+  def repeat(body: =>Unit@cps[Unit]){
+    always(SimTime(0)) {body}
+  }
 }
 
 object Component {
