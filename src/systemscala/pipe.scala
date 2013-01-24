@@ -17,8 +17,10 @@ class Pipe(val name: String, val parent: Component = Component.root) {
     onRead._notify
     if(pipe.isEmpty){
       onWrite._wait()
-    } else {}: Unit@cps[Unit]
-    pipe.dequeue
+      pipe.dequeue
+    } else {
+      pipe.dequeue
+    }
   }
   def write(v: Any): Unit = {
     onWrite._notify
@@ -28,7 +30,16 @@ class Pipe(val name: String, val parent: Component = Component.root) {
 
 object Pipe{
   var insts = scala.collection.mutable.HashMap[String, Pipe]()
+  def apply(name: String, parent: Component = Component.root) : Pipe ={
+    new Pipe(name, parent)
+  }
   def add[T](s: Pipe){
     insts += (s.fullname -> s)
+  }
+  def pipe(n: String): Pipe = {
+    insts.get(n) match {
+      case None => throw new Exception("Cannot find Pipe " + n)
+      case Some(p) => p
+    }
   }
 }

@@ -31,8 +31,17 @@ class Signal(val name: String, val parent: Component = Component.root, var oldVa
 
 object Signal{
   var insts = scala.collection.mutable.HashMap[String, Signal]()
+  def apply(name: String, parent: Component = Component.root, v:Any=null) : Signal ={
+    new Signal(name, parent, v)
+  }
   def add[T](s: Signal){
     insts += (s.fullname -> s)
+  }
+  def signal(n: String): Signal = {
+    insts.get(n) match {
+      case None => throw new Exception("Cannot find signal " + n)
+      case Some(s) => s
+    }
   }
   def sync {
     for((n, s) <- insts){

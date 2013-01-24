@@ -29,7 +29,8 @@ object SimTime {
   }
   def getRecents: Option[Queue] = {
     if (sts.size > 0) {
-      val (t, ss) = sts.head
+      val t = sts.keys.min
+      val Some(ss) = sts.get(t)
       sts -= t
       timeline = t
       Some(ss)
