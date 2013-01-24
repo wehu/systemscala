@@ -1,6 +1,6 @@
 import systemscala._
 
-import Helper._
+import helper._
 
 class SubComp (name: String, parent: Component = root)
   extends Component(name, parent)
