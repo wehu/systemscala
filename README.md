@@ -7,12 +7,14 @@ For example,
 
 	import systemscala._
 
+	import Helper._
+
 	// Define a sub component	
-	class SubComp (name: String, parent: Component = null)
+	class SubComp (name: String, parent: Component = root)
 	  extends Component(name, parent)
 	
 	// Define a component
-	class MyComp(name: String, parent: Component = null)
+	class MyComp(name: String, parent: Component = root)
 	  extends Component(name, parent) {
 
 	  // Instance a sub component
@@ -20,28 +22,28 @@ For example,
 
 	  // A initial block
 	  initial {
-	    Logger.info("MyComp start")
+	    info("MyComp start")
 	  }
 	  
 	  // Instance a signal
-	  var s = new Signal("signal0", this)
+	  var s = Signal("signal0", this)
 
 	  // A always block
 	  var i = 0
-	  always(SimTime(1)){
+	  always(1){
 	    i += 1
 	    s.write(i)
 	    if(i == 10){
-	      Logger.info("MyComp stop")
-	      Simulate.stop = true
+	      info("MyComp stop")
+	      stop
 	    }
 	  }
 
 	  // Another always block which wait on value changing of signal 's'
 	  always(s.onChanged){
-	    Logger.info(s.read)
+	    info(s.read)
 	  }
-	  Logger.info(s.fullname)
+	  info(s.fullname)
 	}
 	
 	// Main
