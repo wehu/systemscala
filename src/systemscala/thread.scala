@@ -20,10 +20,10 @@ import scala.util.continuations._
 
 class Thread(var body: ()=>Unit @cps[Unit], n: String = "") {
   Thread.counter += 1
-  val name = if (n == "") ("thread " + Thread.counter) else n
+  val name = if (n == "") ("tmp$" + Thread.counter) else n
   Thread.add(this)
   val parent = if (name == "root") this else Thread.current
-  override def toString() = name
+  override def toString() = "Thread " + name
   def resume: Unit @cps[Unit] = {
     Thread.current = this
     body()

@@ -7,7 +7,7 @@ class SubComp (name: String, parent: Component = root)
 
 class MyComp(name: String, parent: Component = root)
   extends Component(name, parent) {
-  val sub = new SubComp("a", this)
+  val sub = new SubComp("subcomp0", this)
   var i = 0
   var s = Signal[Int]("signal0", 0, this)
   always(1){
@@ -38,5 +38,8 @@ class MyComp(name: String, parent: Component = root)
 object Main extends Simulate {
   def run{
     new MyComp("comp0")
+    info(component("comp0.subcomp0"))
+    info(signal[Int]("comp0.signal0"))
+    info(pipe[String]("comp0.pipe0"))
   }
 }

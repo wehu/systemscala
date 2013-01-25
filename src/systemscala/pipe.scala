@@ -18,8 +18,9 @@
 package systemscala
 
 object PipeMgr{
-  abstract class PipeMgr[T] {
+  abstract class PipeMgr[T: Manifest] {
     var insts: scala.collection.mutable.HashMap[String, Pipe[T]]
+    def typeString = manifest[T].toString()
   }
   implicit object IntPipe extends PipeMgr[Int]{ 
     var insts = scala.collection.mutable.HashMap[String, Pipe[Int]]()
@@ -41,6 +42,7 @@ class Pipe[T](val name: String, val parent: Component = Component.root)
   val fullname: String = (if (parent == null) ""  else parent.fullname + ".") + name
   var pipe = scala.collection.mutable.Queue[T]()
   Pipe.add[T](this)(pm)
+  override def toString() = "Pipe[" + pm.typeString + "] " + fullname
   Event(fullname + "." + "read")
   Event(fullname + "." + "write")
   Event(fullname + "." + "changed")

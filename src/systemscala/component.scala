@@ -21,6 +21,7 @@ class Component(val name: String, val parent: Component = Component.root) {
   import scala.util.continuations._
   val fullname: String = (if (parent == null) ""  else parent.fullname + ".") + name
   Component.add(this)
+  override def toString() = "Component " + fullname
   def build = {}
   def connect = {}
   def run : Unit@cps[Unit] = {}
@@ -64,6 +65,12 @@ object Component {
   var insts = scala.collection.mutable.HashMap[String, Component]()
   def add(c: Component){
     insts += (c.fullname -> c)
+  }
+  def component(name: String) : Component = {
+    insts.get(name) match {
+      case None => throw new Exception("Cannot find component " + name)
+      case Some(c) => c
+    }
   }
   def run {
     for ((n, i) <- insts) {

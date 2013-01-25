@@ -20,7 +20,7 @@ package systemscala
 class SimTime(val delay: Int = 0) extends Event {
   val simtime = SimTime.timeline + delay * SimTime.timescale
   SimTime.add(this)
-  override def toString() = "Simulation time " + simtime
+  override def toString() = "Simtime " + simtime
   override def _notify {
     super._notify
     Event.remove(this)

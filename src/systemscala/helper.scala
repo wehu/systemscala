@@ -5,6 +5,7 @@ object Helper {
   import PipeMgr._
   def root = Component.root
   val event = Event.event(_)
+  val component = Component.component(_)
   def pipe[T](name:String)(implicit pm: PipeMgr[T]) = Pipe.pipe[T](name)(pm)
   def signal[T](name:String)(implicit sm: SignalMgr[T]) = Signal.signal[T](name)(sm)
   //val delta = SimTime.delta(_)

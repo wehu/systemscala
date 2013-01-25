@@ -18,8 +18,9 @@
 package systemscala
 
 object SignalMgr{
-  abstract class SignalMgr[T] {
+  abstract class SignalMgr[T: Manifest] {
     var insts: scala.collection.mutable.HashMap[String, Signal[T]]
+    def typeString = manifest[T].toString()
   }
   implicit object IntSignal extends SignalMgr[Int]{ 
     var insts = scala.collection.mutable.HashMap[String, Signal[Int]]()
@@ -40,6 +41,7 @@ class Signal[T](val name: String, var oldVal: T, val parent: Component = Compone
   val fullname: String = (if (parent == null) ""  else parent.fullname + ".") + name
   var newVal = oldVal
   Signal.add[T](this)(sm)
+  override def toString() = "Signal[" + sm.typeString + "] " + fullname
   Event(fullname + "." + "read")
   Event(fullname + "." + "write")
   Event(fullname + "." + "changed")

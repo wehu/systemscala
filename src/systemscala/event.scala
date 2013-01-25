@@ -22,10 +22,10 @@ class Event(n: String = "", tmp: Boolean = false) {
   type CB = ()=>Unit
   var cbs = scala.collection.mutable.HashMap[CB, CB]()
   Event.counter += 1
-  val name = if (n == "") "event " + Event.counter else n
+  val name = if (n == "") "tmp$" + Event.counter else n
   if(!tmp)
     Event.add(this)
-  override def toString() = name
+  override def toString() = "Event " + name
   def subscribe(cb: => Unit) : CB = {
     val _cb = ()=>{cb}
     cbs += (_cb -> _cb)
