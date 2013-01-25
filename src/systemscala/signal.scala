@@ -32,6 +32,10 @@ object SignalMgr{
     var insts = scala.collection.mutable.HashMap[String, Signal[Float]]()
   }
   //TODO More types
+  //default
+  implicit object AnySignal extends SignalMgr[Any]{ 
+    var insts = scala.collection.mutable.HashMap[String, Signal[Any]]()
+  }
 }
   
 import SignalMgr._

@@ -32,6 +32,10 @@ object PipeMgr{
     var insts = scala.collection.mutable.HashMap[String, Pipe[Float]]()
   }
   //TODO More types
+  //default
+  implicit object AnyPipe extends PipeMgr[Any]{ 
+    var insts = scala.collection.mutable.HashMap[String, Pipe[Any]]()
+  }
 }
   
 import PipeMgr._
