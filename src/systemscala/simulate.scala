@@ -53,7 +53,8 @@ object Simulate {
     } catch {
       case e: UserStopException => Logger.info(e.getMessage())
       case e => throw e
+    } finally {
+      Logger.info("Simulation finished")
     }
-    Logger.info("Simulation finished") 
   }
 }
