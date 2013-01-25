@@ -35,8 +35,10 @@ object Simulate {
     Logger.info("Simulation started")
     try {
       Thread.run{
-        var sl:()=>Unit = null
-        sl = ()=>{
+        body
+        Component.run
+        var r = true
+        do {
           Thread.runOne
           Signal.sync[Int]
           Signal.sync[String]
@@ -44,13 +46,9 @@ object Simulate {
           SimTime.getRecents match {
             case Some(ss) =>
               ss foreach (_._notify)
-              Thread{sl()}
-            case None => null
+            case None => false
           }
-        } : Unit
-        body
-        Component.run
-        sl()
+        } while (r)
       }
     } catch {
       case e: UserStopException => Logger.info(e.getMessage())
