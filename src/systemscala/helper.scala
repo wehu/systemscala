@@ -14,10 +14,10 @@ object Helper {
   def stop = Simulate.stop 
   def sleep = Thread.sleep
   val wake = Thread.wake(_)
-  def info(args: Any*) = Logger.info(args.mkString)
-  def debug(args: Any*) = Logger.debug(args.mkString)
-  def error(args: Any*) = Logger.error(args.mkString)
-  def warn(args: Any*) = Logger.warn(args.mkString)
+  def info(args: Any*) = Logger.info(args: _*)
+  def debug(args: Any*) = Logger.debug(args: _*)
+  def error(args: Any*) = Logger.error(args: _*)
+  def warn(args: Any*) = Logger.warn(args: _*)
   def spawn(b: =>Unit@cps[Unit], n:String = "") = Thread.spawn(b, n)
   def join(ts: Thread*) = Thread.join(ts: _*)
 }
