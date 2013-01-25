@@ -21,11 +21,14 @@ object PipeMgr{
   abstract class PipeMgr[T] {
     var insts: scala.collection.mutable.HashMap[String, Pipe[T]]
   }
-  implicit object PipeInt extends PipeMgr[Int]{ 
+  implicit object IntPipe extends PipeMgr[Int]{ 
     var insts = scala.collection.mutable.HashMap[String, Pipe[Int]]()
   }
-  implicit object PipeString extends PipeMgr[String]{ 
+  implicit object StringPipe extends PipeMgr[String]{ 
     var insts = scala.collection.mutable.HashMap[String, Pipe[String]]()
+  }
+  implicit object FloatPipe extends PipeMgr[Float]{ 
+    var insts = scala.collection.mutable.HashMap[String, Pipe[Float]]()
   }
   //TODO More types
 }

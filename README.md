@@ -7,7 +7,7 @@ For example,
 
 	import systemscala._
 
-	import helper._
+	import Helper._
 
 	// Define a sub component	
 	class SubComp (name: String, parent: Component = root)

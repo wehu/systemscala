@@ -21,11 +21,14 @@ object SignalMgr{
   abstract class SignalMgr[T] {
     var insts: scala.collection.mutable.HashMap[String, Signal[T]]
   }
-  implicit object SignalInt extends SignalMgr[Int]{ 
+  implicit object IntSignal extends SignalMgr[Int]{ 
     var insts = scala.collection.mutable.HashMap[String, Signal[Int]]()
   }
-  implicit object SignalString extends SignalMgr[String]{ 
+  implicit object StringSignal extends SignalMgr[String]{ 
     var insts = scala.collection.mutable.HashMap[String, Signal[String]]()
+  }
+  implicit object FloatSignal extends SignalMgr[Float]{ 
+    var insts = scala.collection.mutable.HashMap[String, Signal[Float]]()
   }
   //TODO More types
 }

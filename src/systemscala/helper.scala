@@ -1,6 +1,6 @@
 package systemscala
 
-object helper {
+object Helper {
   import SignalMgr._
   import PipeMgr._
   def root = Component.root
