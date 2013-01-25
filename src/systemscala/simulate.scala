@@ -25,7 +25,7 @@ abstract class Simulate extends App {
 object Simulate {
   class UserStopException(msg: String) extends Exception(msg)
   def stop {
-    throw new UserStopException("Simulation finished by user")
+    throw new UserStopException("Simulation stopped by user")
   }
   def run(body: => Unit){
     println("###########################")
@@ -46,13 +46,14 @@ object Simulate {
           SimTime.getRecents match {
             case Some(ss) =>
               ss foreach (_._notify)
-            case None => false
+            case None => r = false
           }
-        } while (r)
+        } while (r) 
       }
     } catch {
       case e: UserStopException => Logger.info(e.getMessage())
       case e => throw e
     }
+    Logger.info("Simulation finished") 
   }
 }
