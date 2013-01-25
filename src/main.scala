@@ -33,6 +33,11 @@ class MyComp(name: String, parent: Component = root)
     var d = p.read
     info(d)
   }
+  initial {
+    join(spawn{delay(3);info("spawn 0")},
+         spawn{delay(4);info("spawn 1")})
+    info("join")
+  }
 }
 
 object Main extends Simulate {

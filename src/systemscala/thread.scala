@@ -18,9 +18,12 @@
 package systemscala
 import scala.util.continuations._
 
-class Thread(var body: ()=>Unit @cps[Unit], n: String = "") {
+class Thread(_body: ()=>Unit @cps[Unit], n: String = "") {
   Thread.counter += 1
   val name = if (n == "") ("tmp$" + Thread.counter) else n
+  val eFinished = new Event
+  var alive = true
+  var body = ()=>{ _body(); alive = false; eFinished._notify}
   Thread.add(this)
   val parent = if (name == "root") this else Thread.current
   override def toString() = "Thread " + name
@@ -61,6 +64,19 @@ object Thread {
   def wake(t: Thread){
     queue_s -= t
     queue_r += (t -> t)
+  }
+  def spawn(body: =>Unit@cps[Unit], name: String="") : Thread = {
+    this({body}, name)
+  }
+  def join(ts: Thread*) : Unit@cps[Unit] = {
+    val c = current
+    val cbs = ts map ((t) =>{(t, t.eFinished.subscribe(wake(c)))})
+    while(ts.exists((t)=>t.alive)){
+      sleep
+    }
+    for((t, cb) <- cbs){
+      t.eFinished.remove(cb)
+    }
   }
   class UserStopException(msg: String) extends Exception(msg)
   def stop(msg: String = "finished") {

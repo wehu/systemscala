@@ -1,6 +1,7 @@
 package systemscala
 
 object Helper {
+  import scala.util.continuations.cps
   import SignalMgr._
   import PipeMgr._
   def root = Component.root
@@ -17,4 +18,6 @@ object Helper {
   def debug(args: Any*) = Logger.debug(args.mkString)
   def error(args: Any*) = Logger.error(args.mkString)
   def warn(args: Any*) = Logger.warn(args.mkString)
+  def spawn(b: =>Unit@cps[Unit], n:String = "") = Thread.spawn(b, n)
+  def join(ts: Thread*) = Thread.join(ts: _*)
 }
