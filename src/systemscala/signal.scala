@@ -59,7 +59,6 @@ object Signal{
   }
   def signal[T](n: String): Signal[T] = {
     insts.get(n) match {
-      case None => throw new Exception("Cannot find signal " + n)
       case Some(s: Signal[T]) => s
       case _ => throw new Exception("Cannot find signal " + n)
     }

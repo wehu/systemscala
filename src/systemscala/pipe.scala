@@ -56,7 +56,6 @@ object Pipe{
   }
   def pipe[T](n: String) : Pipe[T] = {
     insts.get(n) match {
-      case None => throw new Exception("Cannot find Pipe " + n)
       case Some(p: Pipe[T]) => p
       case _ => throw new Exception("Cannot find Pipe " + n)
     }
