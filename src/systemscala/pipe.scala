@@ -17,36 +17,12 @@
 
 package systemscala
 
-object PipeMgr{
-  abstract class PipeMgr[T: Manifest] {
-    var insts: scala.collection.mutable.HashMap[String, Pipe[T]]
-    def typeString = manifest[T].toString()
-  }
-  implicit object IntPipe extends PipeMgr[Int]{ 
-    var insts = scala.collection.mutable.HashMap[String, Pipe[Int]]()
-  }
-  implicit object StringPipe extends PipeMgr[String]{ 
-    var insts = scala.collection.mutable.HashMap[String, Pipe[String]]()
-  }
-  implicit object FloatPipe extends PipeMgr[Float]{ 
-    var insts = scala.collection.mutable.HashMap[String, Pipe[Float]]()
-  }
-  //TODO More types
-  //default
-  implicit object AnyPipe extends PipeMgr[Any]{ 
-    var insts = scala.collection.mutable.HashMap[String, Pipe[Any]]()
-  }
-}
-  
-import PipeMgr._
-
-class Pipe[T](val name: String, val parent: Component = Component.root)
-  (implicit pm: PipeMgr[T]) {
+class Pipe[T: Manifest](val name: String, val parent: Component = Component.root) {
   import scala.util.continuations.cps
   val fullname: String = (if (parent == null) ""  else parent.fullname + ".") + name
   var pipe = scala.collection.mutable.Queue[T]()
-  Pipe.add[T](this)(pm)
-  override def toString() = "Pipe[" + pm.typeString + "] " + fullname
+  Pipe.add(fullname, this)
+  override def toString() = "Pipe[" + manifest[T] + "] " + fullname
   Event(fullname + "." + "read")
   Event(fullname + "." + "write")
   Event(fullname + "." + "changed")
@@ -71,17 +47,18 @@ class Pipe[T](val name: String, val parent: Component = Component.root)
 }
 
 object Pipe{
-  def apply[T](name: String, parent: Component = Component.root)
-    (implicit pm: PipeMgr[T]) : Pipe[T] ={
-    new Pipe[T](name, parent)(pm)
+  var insts = scala.collection.mutable.HashMap[String, Any]()
+  def apply[T: Manifest](name: String, parent: Component = Component.root) : Pipe[T] ={
+    new Pipe[T](name, parent)
   }
-  def add[T](s: Pipe[T])(implicit pm: PipeMgr[T]) {
-    pm.insts += (s.fullname -> s)
+  def add(fullname: String, s: Any) {
+    insts += (fullname -> s)
   }
-  def pipe[T](n: String)(implicit pm: PipeMgr[T]) : Pipe[T] = {
-    pm.insts.get(n) match {
+  def pipe[T](n: String) : Pipe[T] = {
+    insts.get(n) match {
       case None => throw new Exception("Cannot find Pipe " + n)
-      case Some(p) => p
+      case Some(p: Pipe[T]) => p
+      case _ => throw new Exception("Cannot find Pipe " + n)
     }
   }
 }

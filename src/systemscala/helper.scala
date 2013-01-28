@@ -2,13 +2,11 @@ package systemscala
 
 object Helper {
   import scala.util.continuations.cps
-  import SignalMgr._
-  import PipeMgr._
   def root = Component.root
   val event = Event.event(_)
   val component = Component.component(_)
-  def pipe[T](name:String)(implicit pm: PipeMgr[T]) = Pipe.pipe[T](name)(pm)
-  def signal[T](name:String)(implicit sm: SignalMgr[T]) = Signal.signal[T](name)(sm)
+  def pipe[T](name:String) = Pipe.pipe[T](name)
+  def signal[T](name:String) = Signal.signal[T](name)
   //val delta = SimTime.delta(_)
   val run = Simulate.run(_)
   def stop = Simulate.stop 
