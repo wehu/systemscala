@@ -47,7 +47,7 @@ class Pipe[T: Manifest](val name: String, val parent: Component = Component.root
 }
 
 object Pipe{
-  var insts = scala.collection.mutable.HashMap[String, Any]()
+  private[this] var insts = scala.collection.mutable.HashMap[String, Any]()
   def apply[T: Manifest](name: String, parent: Component = Component.root) : Pipe[T] ={
     new Pipe[T](name, parent)
   }

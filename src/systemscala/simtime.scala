@@ -31,25 +31,25 @@ object SimTime {
   type Queue = scala.collection.mutable.Queue[SimTime]
   var timeline = 0
   var timescale = 1
-  var sts = scala.collection.mutable.HashMap[Int, Queue]()
+  private[this] var insts = scala.collection.mutable.HashMap[Int, Queue]()
 
   def apply(delay: Int = 0) : SimTime = {
     new SimTime(delay)
   }
   def add(s: SimTime) {
-    sts.get(s.simtime) match {
+    insts.get(s.simtime) match {
       case None => var q = new Queue
         q += s
-        sts += (s.simtime -> q) 
+        insts += (s.simtime -> q) 
       case Some(q) => q += s
     }
   }
   def delta(d: Int) = SimTime(d)
   def getRecents: Option[Queue] = {
-    if (sts.size > 0) {
-      val t = sts.keys.min
-      val Some(ss) = sts.get(t)
-      sts -= t
+    if (insts.size > 0) {
+      val t = insts.keys.min
+      val Some(ss) = insts.get(t)
+      insts -= t
       timeline = t
       Some(ss)
     } else {

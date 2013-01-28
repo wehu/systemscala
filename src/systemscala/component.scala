@@ -62,7 +62,7 @@ class Component(val name: String, val parent: Component = Component.root) {
 
 object Component {
   val root: Component = null
-  var insts = scala.collection.mutable.HashMap[String, Component]()
+  private[this] var insts = scala.collection.mutable.HashMap[String, Component]()
   def add(c: Component){
     insts.get(c.fullname) match {
       case None => insts += (c.fullname -> c)

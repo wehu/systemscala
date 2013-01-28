@@ -40,11 +40,11 @@ class Thread(_body: ()=>Unit @cps[Unit], n: String = "") {
 }
 
 object Thread {
-  var counter = 0
+  private var counter = 0
   var root : Thread = null
   var current = root
-  var queue_r = scala.collection.mutable.HashMap[Thread, Thread]()
-  var queue_s = scala.collection.mutable.HashMap[Thread, Thread]()
+  private[this] var queue_r = scala.collection.mutable.HashMap[Thread, Thread]()
+  private[this] var queue_s = scala.collection.mutable.HashMap[Thread, Thread]()
   def remove(t: Thread){
     queue_r -= t
     queue_s -= t

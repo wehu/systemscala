@@ -96,8 +96,8 @@ class Event(n: String = "", tmp: Boolean = false) {
 }
 
 object Event {
-  var counter = 0
-  var insts = scala.collection.mutable.HashMap[String, Event]()
+  private var counter = 0
+  private[this] var insts = scala.collection.mutable.HashMap[String, Event]()
   def apply(name: String = "") : Event = {
     new Event(name)
   }

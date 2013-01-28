@@ -50,7 +50,7 @@ class Signal[T: Manifest](val name: String, var oldVal: T, val parent: Component
 
 
 object Signal{
-  var insts = scala.collection.mutable.HashMap[String, Any]()
+  private[this] var insts = scala.collection.mutable.HashMap[String, Any]()
   def apply[T: Manifest](name: String, v:T, parent: Component = Component.root): Signal[T] ={
     new Signal[T](name, v, parent)
   }
