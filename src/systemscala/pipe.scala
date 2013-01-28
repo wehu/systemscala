@@ -52,7 +52,10 @@ object Pipe{
     new Pipe[T](name, parent)
   }
   def add(fullname: String, s: Any) {
-    insts += (fullname -> s)
+    insts.get(fullname) match {
+      case None => insts += (fullname -> s)
+      case _ => throw new Exception("Attempt to redefine a pipe " + fullname)
+    }
   }
   def pipe[T](n: String) : Pipe[T] = {
     insts.get(n) match {

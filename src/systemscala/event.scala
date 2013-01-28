@@ -97,26 +97,26 @@ class Event(n: String = "", tmp: Boolean = false) {
 
 object Event {
   var counter = 0
-  var events = scala.collection.mutable.HashMap[String, Event]()
+  var insts = scala.collection.mutable.HashMap[String, Event]()
   def apply(name: String = "") : Event = {
     new Event(name)
   }
   def add(e: Event){
-    events.get(e.name) match {
-      case Some(_) => throw new Exception("Attempt to redefine event " + e.name)
-      case _ => events += (e.name -> e) 
+    insts.get(e.name) match {
+      case None => insts += (e.name -> e)
+      case _ => throw new Exception("Attempt to redefine a event " + e.name)
     }
   }
   def event(n: String): Event = {
-    events.get(n) match {
+    insts.get(n) match {
       case None => throw new Exception("Cannot find event " + n)
       case Some(e) => e
     }
   }
   def remove(n: String) {
-    events -= n
+    insts -= n
   }
   def remove(e: Event) {
-    events -= e.name
+    insts -= e.name
   }
 }

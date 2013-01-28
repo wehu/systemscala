@@ -55,7 +55,10 @@ object Signal{
     new Signal[T](name, v, parent)
   }
   def add(fullname: String, s: Any){
-    insts += (fullname -> s)
+    insts.get(fullname) match {
+      case None => insts += (fullname -> s)
+      case _ => throw new Exception("Attempt to redefine a signal " + fullname)
+    }
   }
   def signal[T](n: String): Signal[T] = {
     insts.get(n) match {

@@ -64,7 +64,10 @@ object Component {
   val root: Component = null
   var insts = scala.collection.mutable.HashMap[String, Component]()
   def add(c: Component){
-    insts += (c.fullname -> c)
+    insts.get(c.fullname) match {
+      case None => insts += (c.fullname -> c)
+      case _ => throw new Exception("Attempt to redefine a component " + c.fullname)
+    }
   }
   def component(name: String) : Component = {
     insts.get(name) match {
