@@ -5,8 +5,8 @@ object Helper {
   def root = Component.root
   val event = Event.event(_)
   val component = Component.component(_)
-  def pipe[T](name:String) = Pipe.pipe[T](name)
-  def signal[T](name:String) = Signal.signal[T](name)
+  def pipe[T: Manifest](name:String) = Pipe.pipe[T](name)
+  def signal[T: Manifest](name:String) = Signal.signal[T](name)
   //val delta = SimTime.delta(_)
   val run = Simulate.run(_)
   def stop = Simulate.stop 

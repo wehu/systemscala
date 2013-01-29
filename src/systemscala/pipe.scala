@@ -57,7 +57,7 @@ object Pipe{
       case _ => throw new Exception("Attempt to redefine a pipe " + fullname)
     }
   }
-  def pipe[T](n: String) : Pipe[T] = {
+  def pipe[T: Manifest](n: String) : Pipe[T] = {
     insts.get(n) match {
       case Some(p: Pipe[T]) => p
       case _ => throw new Exception("Cannot find Pipe " + n)

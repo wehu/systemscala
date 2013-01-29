@@ -60,7 +60,7 @@ object Signal{
       case _ => throw new Exception("Attempt to redefine a signal " + fullname)
     }
   }
-  def signal[T](n: String): Signal[T] = {
+  def signal[T: Manifest](n: String): Signal[T] = {
     insts.get(n) match {
       case Some(s: Signal[T]) => s
       case _ => throw new Exception("Cannot find signal " + n)
