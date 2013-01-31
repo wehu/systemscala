@@ -41,10 +41,8 @@ class MyComp(name: String, parent: Component = root)
 }
 
 object Main extends Simulate {
-  def run{
-    new MyComp("comp0")
-    info(component("comp0.subcomp0"))
-    info(signal[Int]("comp0.signal0"))
-    info(pipe[String]("comp0.pipe0"))
-  }
+  new MyComp("comp0")
+  info(component("comp0.subcomp0"))
+  info(signal[Int]("comp0.signal0"))
+  info(pipe[String]("comp0.pipe0"))
 }

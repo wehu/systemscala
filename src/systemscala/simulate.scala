@@ -17,9 +17,11 @@
 
 package systemscala
 
-abstract class Simulate extends App {
-  def run
-  Simulate.run {run}
+class Simulate {
+  def run = {}
+  def main(args: Array[String]) {
+    Simulate.run {run}
+  }
 }
 
 object Simulate {

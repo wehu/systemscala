@@ -59,8 +59,6 @@ For example,
 	
 	// Main
 	object Main extends Simulate {
-	  def run {
-	    // Instance top component
-	    new MyComp("comp")
-	  }
+	  // Instance top component
+	  new MyComp("comp")
 	}
